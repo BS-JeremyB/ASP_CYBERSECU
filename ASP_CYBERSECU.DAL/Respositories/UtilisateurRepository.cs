@@ -72,7 +72,20 @@ namespace ASP_CYBERSECU.DAL.Respositories
 
         public Utilisateur? Register(Utilisateur utilisateur)
         {
-            throw new NotImplementedException();
+            using(SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = "dbo.[Register]";
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.AddWithValue("@Username", utilisateur.Username);
+                command.Parameters.AddWithValue("@Email", utilisateur.Email);
+                command.Parameters.AddWithValue("@Password", utilisateur.Password);
+
+                _connection.Open();
+                utilisateur.Id = (int)command.ExecuteScalar();
+                _connection.Close();
+                return utilisateur;
+            }
         }
 
         public Utilisateur? UpdateUtilisateur(int id, Utilisateur utilisateur)

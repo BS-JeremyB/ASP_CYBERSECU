@@ -40,7 +40,7 @@ namespace ASP_CYBERSECU.BLL.Services
 
         public Utilisateur? Register(Utilisateur utilisateur)
         {
-            throw new NotImplementedException();
+            return _repository.Register(utilisateur);
         }
 
         public Utilisateur? UpdateUtilisateur(int id, Utilisateur utilisateur)
