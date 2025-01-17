@@ -28,9 +28,27 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Utilisateur" asp-action="Index">Utilisateurs</a>
                         </li>
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <form class="d-inline" asp-controller="Utilisateur" asp-action="Logout">
+                                    <input class="btn btn-link" type="submit" value="Deconnexion" />
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Utilisateur" asp-action="Create">Inscription</a>
+                        </li>
+                            
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Utilisateur" asp-action="Login">Connexion</a>
                         </li>
+                        }
+
+
                     </ul>
                 </div>
             </div>

@@ -2,8 +2,11 @@
 using ASP_CYBERSECU.Domain.Entities;
 using ASP_CYBERSECU.PRESENTATION_LAYER.Models;
 using ASP_CYBERSECU.PRESENTATION_LAYER.Models.Mappers;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ASP_CYBERSECU.PRESENTATION_LAYER.Controllers
 {
@@ -52,16 +55,63 @@ namespace ASP_CYBERSECU.PRESENTATION_LAYER.Controllers
             return View(_service.GetById(id));
         }
 
-
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
         public IActionResult Delete(int id)
         {
-            _service.Delete(id);
+            string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+            if (userEmail == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            Utilisateur utilisateur = _service.GetById(id);
+
+            if (utilisateur is not null)
+            {
+                if (utilisateur.Email == userEmail)
+                {
+
+                    _service.Delete(id);
+                    HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).Wait();
+                }
+                else
+                {
+                    return Forbid();
+                }
+            }
+
             return RedirectToAction("Index");
+           
         }
 
+        [Authorize]
         public IActionResult Edit(int id)
         {
-            return View(_service.GetById(id).ToEditUtilisateur());
+            string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+            if (userEmail == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            Utilisateur utilisateur = _service.GetById(id);
+
+            if(utilisateur is not null)
+            {
+                if(utilisateur.Email == userEmail)
+                {
+
+                    return View(_service.GetById(id).ToEditUtilisateur());
+                }
+                else
+                {
+                    return Forbid();
+                }
+            }
+
+            return RedirectToAction("Index");
+            
         }
 
         [HttpPost]
@@ -93,13 +143,42 @@ namespace ASP_CYBERSECU.PRESENTATION_LAYER.Controllers
                 if (utilisateur != null)
                 {
                     // session
-                    return RedirectToAction("Index");
+
+                    List<Claim> claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, utilisateur.Id.ToString()),
+                        new Claim(ClaimTypes.Name, utilisateur.Username),
+                        new Claim(ClaimTypes.Email, utilisateur.Email)
+                    };
+
+                    ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    AuthenticationProperties authenticationProperties = new AuthenticationProperties 
+                    {
+                        IsPersistent = true,
+                        ExpiresUtc = DateTime.UtcNow.AddHours(1),
+                    };
+
+
+                    HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity)).Wait();
+
+
+                    return RedirectToAction("Index", "Home");
                 }
             }
                 return RedirectToAction("Login");
 
                 
             return RedirectToAction("Login");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Logout()
+        {
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).Wait();
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }

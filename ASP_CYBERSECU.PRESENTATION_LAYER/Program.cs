@@ -2,6 +2,7 @@ using ASP_CYBERSECU.BLL.Interfaces;
 using ASP_CYBERSECU.BLL.Services;
 using ASP_CYBERSECU.DAL.Interfaces;
 using ASP_CYBERSECU.DAL.Respositories;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,13 @@ builder.Services.AddScoped<SqlConnection>(c => new SqlConnection(builder.Configu
 builder.Services.AddScoped<IUtilisateurRepository, UtilisateurRepository>();
 builder.Services.AddScoped<IUtilisateurService, UtilisateurService>();
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(option =>
+{
+    option.LoginPath = "/Utilisateur/Login";
+    option.LogoutPath = "/Utilisateur/Logout";
+
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -35,6 +43,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

@@ -1,5 +1,8 @@
 using ASP_CYBERSECU.PRESENTATION_LAYER.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Diagnostics;
 
 namespace ASP_CYBERSECU.PRESENTATION_LAYER.Controllers
@@ -17,7 +20,7 @@ namespace ASP_CYBERSECU.PRESENTATION_LAYER.Controllers
         {
             return View();
         }
-
+        [Authorize]
         public IActionResult Privacy()
         {
             return View();
