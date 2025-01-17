@@ -35,7 +35,7 @@ namespace ASP_CYBERSECU.BLL.Services
 
         public Utilisateur? Login(string email, string password)
         {
-            throw new NotImplementedException();
+            return _repository.Login(email, password);
         }
 
         public Utilisateur? Register(Utilisateur utilisateur)

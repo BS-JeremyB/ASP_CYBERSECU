@@ -76,5 +76,30 @@ namespace ASP_CYBERSECU.PRESENTATION_LAYER.Controllers
 
             return RedirectToAction("Edit", new { Id = editUtilisateur.Id});
         }
+
+
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Login(LoginUtilisateurForm loginUtilisateur)
+        {
+            if (ModelState.IsValid)
+            {
+                Utilisateur? utilisateur = _service.Login(loginUtilisateur.Email, loginUtilisateur.Password);
+
+                if (utilisateur != null)
+                {
+                    // session
+                    return RedirectToAction("Index");
+                }
+            }
+                return RedirectToAction("Login");
+
+                
+            return RedirectToAction("Login");
+        }
     }
 }

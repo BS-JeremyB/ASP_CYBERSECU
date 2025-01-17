@@ -22,7 +22,7 @@ namespace ASP_CYBERSECU.DAL.Respositories
 
         public bool Delete(int id)
         {
-            using(SqlCommand command = _connection.CreateCommand())
+            using (SqlCommand command = _connection.CreateCommand())
             {
                 command.CommandText = "DELETE FROM UTILISATEUR WHERE id = @id";
                 command.CommandType = CommandType.Text;
@@ -42,18 +42,18 @@ namespace ASP_CYBERSECU.DAL.Respositories
         {
             List<Utilisateur> utilisateurs = new List<Utilisateur>();
 
-            using(SqlCommand command = _connection.CreateCommand())
+            using (SqlCommand command = _connection.CreateCommand())
             {
                 command.CommandText = "SELECT * FROM UTILISATEUR";
                 command.CommandType = CommandType.Text;
 
                 _connection.Open();
-                using(SqlDataReader reader = command.ExecuteReader())
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
                         utilisateurs.Add(
-                            new Utilisateur 
+                            new Utilisateur
                             {
                                 Id = reader.GetInt32("id"),
                                 Username = reader.GetString("username"),
@@ -103,7 +103,7 @@ namespace ASP_CYBERSECU.DAL.Respositories
         {
             Utilisateur? utilisateur = null;
 
-            using(SqlCommand command = _connection.CreateCommand())
+            using (SqlCommand command = _connection.CreateCommand())
             {
                 command.CommandText = "SELECT id, username, email FROM Utilisateur WHERE id = @id";
                 command.CommandType = CommandType.Text;
@@ -132,12 +132,36 @@ namespace ASP_CYBERSECU.DAL.Respositories
 
         public Utilisateur? Login(string email, string password)
         {
-            throw new NotImplementedException();
-        }
+            Utilisateur? utilisateur = null;
 
+            using (SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = "dbo.[Login]";
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.AddWithValue("@Email", email);
+                command.Parameters.AddWithValue("@Password", password);
+
+                _connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        utilisateur = new Utilisateur
+                        {
+                            Id = reader.GetInt32("id"),
+                            Username = reader.GetString("username"),
+                            Email = reader.GetString("email")
+                        };
+                    }
+                }
+                _connection.Close();
+                return utilisateur;
+            }
+        }
         public Utilisateur? Register(Utilisateur utilisateur)
         {
-            using(SqlCommand command = _connection.CreateCommand())
+            using (SqlCommand command = _connection.CreateCommand())
             {
                 command.CommandText = "dbo.[Register]";
                 command.CommandType = CommandType.StoredProcedure;
@@ -156,7 +180,7 @@ namespace ASP_CYBERSECU.DAL.Respositories
         public Utilisateur? UpdateUtilisateur(Utilisateur utilisateur)
         {
 
-            using(SqlCommand command= _connection.CreateCommand())
+            using (SqlCommand command = _connection.CreateCommand())
             {
                 command.CommandText = "UPDATE UTILISATEUR SET username = @username, email = @email  WHERE id = @id";
                 command.CommandType = CommandType.Text;
