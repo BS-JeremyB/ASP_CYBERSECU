@@ -35,7 +35,11 @@ namespace ASP_CYBERSECU.BLL.Services
 
         public Utilisateur? Login(string email, string password)
         {
-            return _repository.Login(email, password);
+            if(_repository.GetByEmail(email) is not null)
+            {
+                return _repository.Login(email, password);
+            }
+            return null;
         }
 
         public Utilisateur? Register(Utilisateur utilisateur)

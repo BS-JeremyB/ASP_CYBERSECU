@@ -166,10 +166,8 @@ namespace ASP_CYBERSECU.PRESENTATION_LAYER.Controllers
                     return RedirectToAction("Index", "Home");
                 }
             }
-                return RedirectToAction("Login");
-
-                
             return RedirectToAction("Login");
+
         }
 
         [HttpPost]
