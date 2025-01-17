@@ -13,7 +13,7 @@ namespace ASP_CYBERSECU.DAL.Interfaces
         Utilisateur? GetById(int id);
         Utilisateur? GetByEmail(string email);
         bool Delete(int id);
-        Utilisateur? UpdateUtilisateur(int id, Utilisateur utilisateur);
+        Utilisateur? UpdateUtilisateur(Utilisateur utilisateur);
         Utilisateur? Register(Utilisateur utilisateur);
         Utilisateur? Login(string email , string password);
     }

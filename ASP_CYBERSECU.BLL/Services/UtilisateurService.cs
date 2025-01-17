@@ -20,7 +20,7 @@ namespace ASP_CYBERSECU.BLL.Services
 
         public bool Delete(int id)
         {
-            throw new NotImplementedException();
+            return _repository.Delete(id);
         }
 
         public IEnumerable<Utilisateur> GetAll()
@@ -30,7 +30,7 @@ namespace ASP_CYBERSECU.BLL.Services
 
         public Utilisateur? GetById(int id)
         {
-            throw new NotImplementedException();
+            return _repository.GetById(id);
         }
 
         public Utilisateur? Login(string email, string password)
@@ -43,9 +43,9 @@ namespace ASP_CYBERSECU.BLL.Services
             return _repository.Register(utilisateur);
         }
 
-        public Utilisateur? UpdateUtilisateur(int id, Utilisateur utilisateur)
+        public Utilisateur? UpdateUtilisateur(Utilisateur utilisateur)
         {
-            throw new NotImplementedException();
+            return _repository.UpdateUtilisateur(utilisateur);
         }
     }
 }

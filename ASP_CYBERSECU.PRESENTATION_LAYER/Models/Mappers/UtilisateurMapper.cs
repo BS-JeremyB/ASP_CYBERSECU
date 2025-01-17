@@ -14,5 +14,23 @@ namespace ASP_CYBERSECU.PRESENTATION_LAYER.Models.Mappers
                 Password = utilisateur.Password,
             };
         }
+
+        public static Utilisateur ToUtilisateur(this EditUtilisateurForm utilisateur)
+        {
+            return new Utilisateur
+            {
+                Id = utilisateur.Id,
+                Email = utilisateur.Email,
+                Username = utilisateur.Username,
+            };
+        }
+        public static EditUtilisateurForm ToEditUtilisateur(this Utilisateur utilisateur)
+        {
+            return new EditUtilisateurForm
+            {
+                Username = utilisateur.Username,
+                Email = utilisateur.Email,
+            };
+        }
     }
 }

@@ -22,7 +22,20 @@ namespace ASP_CYBERSECU.DAL.Respositories
 
         public bool Delete(int id)
         {
-            throw new NotImplementedException();
+            using(SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = "DELETE FROM UTILISATEUR WHERE id = @id";
+                command.CommandType = CommandType.Text;
+
+                command.Parameters.AddWithValue("@id", id);
+
+                _connection.Open();
+                int nbrRow = command.ExecuteNonQuery();
+                _connection.Close();
+
+                return nbrRow > 0;
+
+            }
         }
 
         public IEnumerable<Utilisateur> GetAll()
@@ -57,12 +70,64 @@ namespace ASP_CYBERSECU.DAL.Respositories
 
         public Utilisateur? GetByEmail(string email)
         {
-            throw new NotImplementedException();
+            Utilisateur? utilisateur = null;
+
+            using (SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = "SELECT id, username, email Utilisateur WHERE email = @email";
+                command.CommandType = CommandType.Text;
+
+                command.Parameters.AddWithValue("@email", email);
+
+                _connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        utilisateur = new Utilisateur
+                        {
+                            Id = reader.GetInt32("id"),
+                            Username = reader.GetString("username"),
+                            Email = reader.GetString("email")
+                        };
+                    }
+
+                    _connection.Close();
+                    return utilisateur;
+                }
+
+            }
         }
 
         public Utilisateur? GetById(int id)
         {
-            throw new NotImplementedException();
+            Utilisateur? utilisateur = null;
+
+            using(SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = "SELECT id, username, email FROM Utilisateur WHERE id = @id";
+                command.CommandType = CommandType.Text;
+
+                command.Parameters.AddWithValue("@id", id);
+
+                _connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        utilisateur = new Utilisateur
+                        {
+                            Id = reader.GetInt32("id"),
+                            Username = reader.GetString("username"),
+                            Email = reader.GetString("email")
+                        };
+                    }
+
+                    _connection.Close();
+                    return utilisateur;
+                }
+
+            }
         }
 
         public Utilisateur? Login(string email, string password)
@@ -88,9 +153,23 @@ namespace ASP_CYBERSECU.DAL.Respositories
             }
         }
 
-        public Utilisateur? UpdateUtilisateur(int id, Utilisateur utilisateur)
+        public Utilisateur? UpdateUtilisateur(Utilisateur utilisateur)
         {
-            throw new NotImplementedException();
+
+            using(SqlCommand command= _connection.CreateCommand())
+            {
+                command.CommandText = "UPDATE UTILISATEUR SET username = @username, email = @email  WHERE id = @id";
+                command.CommandType = CommandType.Text;
+
+                command.Parameters.AddWithValue("@id", utilisateur.Id);
+                command.Parameters.AddWithValue("@username", utilisateur.Username);
+                command.Parameters.AddWithValue("@email", utilisateur.Email);
+                _connection.Open();
+                int nbrRow = command.ExecuteNonQuery();
+                _connection.Close();
+
+                return nbrRow > 0 ? utilisateur : null;
+            }
         }
     }
 }
